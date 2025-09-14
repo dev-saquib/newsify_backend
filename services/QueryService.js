@@ -50,7 +50,7 @@ class QueryService {
     return {
       messageId: assistantMessage.messageId,
       response: response,
-      sources: relevantChunks.filter(chunk => chunk.similarity >= 0.5).map(({ chunk }) => ({
+      sources: relevantChunks.filter(chunk => chunk.similarity >= 0.7).map(({ chunk }) => ({
         title: chunk.title,
         url: chunk.url,
         chunkIndex: chunk.chunkIndex
