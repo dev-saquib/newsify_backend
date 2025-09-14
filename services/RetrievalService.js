@@ -12,6 +12,7 @@ class RetrievalService {
     const cached = await this.redisClient.get(cacheKey);
     
     if (cached) {
+      console.log('Cache hit for query:', query);
       return JSON.parse(cached);
     }
     

@@ -32,28 +32,39 @@ app.use(limiter);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// add headers for cors
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  if (req.method === 'OPTIONS') {
+    res.header('Access-Control-Allow-Methods', 'PUT, POST, PATCH, DELETE, GET');
+    return res.status(200).json({});
+  }
+  next();
+});
+
 // Initialize services
 async function initializeServices() {
   const redisClient = createClient({ url: config.redis.url });
   await redisClient.connect();
-  
+
   const pool = new Pool({ connectionString: config.postgres.url });
-  
+
   const openai = require('./utils/openai');
-  
+
   const embeddingService = new EmbeddingService(openai);
   const geminiService = new GeminiService(openai);
   const sessionService = new SessionService(redisClient, config.redis.sessionTtl);
   const retrievalService = new RetrievalService(pool, redisClient, config.retrieval.similarityThreshold, config.redis.cacheTtl);
   const queryService = new QueryService(embeddingService, retrievalService, geminiService, sessionService);
-  
+
   // Attach services to app for access in controllers
   app.set('redisClient', redisClient);
   app.set('pool', pool);
   app.set('sessionService', sessionService);
   app.set('queryService', queryService);
   app.set('logger', logger);
-  
+
   return { redisClient, pool };
 }
 
