@@ -68,6 +68,10 @@ async function initializeServices() {
   return { redisClient, pool };
 }
 
+app.get('/', (req, res) => {
+  return res.send('Newsify Backend is running');
+});
+
 // Routes
 app.post('/session', createSession);
 app.get('/session/:id/history', getSessionHistory);
