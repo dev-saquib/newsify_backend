@@ -6,7 +6,7 @@ async function createSession(req, res) {
   try {
     const sessionService = req.app.get('sessionService');
     const { sessionId } = await sessionService.createSession();
-    res.status(201).json({ id });
+    res.status(201).json({ id : sessionId });
   } catch (error) {
     const logger = req.app.get('logger');
     logger.error('Session creation failed', { error: error.message });
